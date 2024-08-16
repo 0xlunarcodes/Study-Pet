@@ -1,10 +1,10 @@
 import pygame  
-
+import graphics
 # pygame setup
 #it can be a lil studying game that makes you want to study. possibly a todo list that will affect the status of the pet. 
 
 pygame.init()
-screen = pygame.display.set_mode((480, 480))
+screen = pygame.display.set_mode((360, 360))
 clock = pygame.time.Clock()
 running = True
 dt = 0 #deltatime
@@ -25,9 +25,9 @@ textColor = (48, 74, 57)
 #creates savedata if not exist, writes default values
 savefile = open("gamefiles/savedata.txt", "r")
 savedata= savefile.readlines()
-print(savedata[4])
-
 savefile.close()
+
+print(savedata[0])
 
 #variables
 gameScreen = "title"
@@ -36,12 +36,12 @@ mouse = pygame.mouse.get_pos()
 pygame.mixer.music.load("gamefiles/start.ogg")
 
 #positions
-dog_pos = pygame.Vector2(50,75)
+dog_pos = pygame.Vector2(50,55)
 
 #img/surfaces
+graphics.genText('title', 'study dog !', 'l')
 gf_surf = pygame.image.load("gamefiles/gf.jpg").convert()
-titledog_surf = pygame.transform.scale_by(pygame.image.load("dogpics/titledog.png").convert_alpha(), 1.5)
-logo_surf = font_L.render('study dog !', True, textColor)
+titledog_surf = (pygame.image.load("dogpics/titledog.png").convert_alpha())
 start_img = pygame.image.load_extended("gamefiles/start.png").convert_alpha()
 start_surf = pygame.transform.scale_by(start_img, 4)
 
@@ -66,23 +66,30 @@ while running:
 
     # all previous code in this while loop deals with events, framerate and clearing the previous frame. 
     #other code , actual code for the game in the while loop will go below this line
+    
+    status_surf = font_S.render(f"<3 {savedata[0].rstrip(savedata[0][-1])}!  hunger {savedata[1].rstrip(savedata[1][-1])}!  intel {savedata[2].rstrip(savedata[2][-1])}!", True, textColor)
+
 
     match(gameScreen):
         case "title":
             #print("title screen")
-            screen.blit(logo_surf, (100, 30))
+            screen.blit(graphics.surfaces['titleSurf'], (40, 10)) #Boss, we figured it out, time to build outer haven
             screen.blit(titledog_surf, (dog_pos))
                  
-            #little cat image or whatever mikeila draws here
             
             #start button
             #start_surf is the button surface object, need to convert to rect object to get collision with mouse with colliedpoint
-            screen.blit(start_surf, (135,400))
-            if pygame.Rect((135, 400), start_surf.get_size()).collidepoint(mouse) and mouseclick: 
+            screen.blit(start_surf, (80,275))
+            if pygame.Rect((80, 275), start_surf.get_size()).collidepoint(mouse) and mouseclick: 
                 print("button active")
                 pygame.mixer.music.play()
-                gameScreen = None
-                #switch screen to either, new user screen or returning user screen. new user screen will have a tutorial or an explanation of what the app is for how to use etc
+                gameScreen = "main"
+                
+        case "main" : 
+            #print(savedata[1])
+            screen.blit(status_surf, (40, 10))
+            screen.blit(titledog_surf, (dog_pos))
+                  
 
         case _:
             print("no current gamescreen!!")
